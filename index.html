@@ -325,17 +325,17 @@ function renderPaso() {
     div.innerHTML = `<label class="campo-label">${c.label}${c.req ? '<span class="campo-req">*</span>' : ''}</label>`;
     if (c.tipo === 'yesno') {
       div.innerHTML += `<div class="yesno">
-        <button class="yesno-btn${datos[c.id]==='Sí'?' active':''}" onclick="setVal('${c.id}','Sí')">Sí</button>
-        <button class="yesno-btn${datos[c.id]==='No'?' active':''}" onclick="setVal('${c.id}','No')">No</button>
+        <button class="yesno-btn${datos[c.id]==='Sí'?' active':''}" onclick="setYesNo('${c.id}','Sí',this)">Sí</button>
+        <button class="yesno-btn${datos[c.id]==='No'?' active':''}" onclick="setYesNo('${c.id}','No',this)">No</button>
       </div>`;
     } else if (c.tipo === 'textarea') {
-      div.innerHTML += `<textarea class="campo-input${hasErr?' error':''}" rows="${c.rows||3}" placeholder="${c.ph||''}" oninput="setVal('${c.id}',this.value)">${datos[c.id]||''}</textarea>`;
+      div.innerHTML += `<textarea class="campo-input${hasErr?' error':''}" rows="${c.rows||3}" placeholder="${c.ph||''}" oninput="datos['${c.id}']=this.value">${datos[c.id]||''}</textarea>`;
     } else if (c.tipo === 'select') {
       let opts = '<option value="">Seleccionar…</option>';
       (c.ops||[]).forEach(o => opts += `<option value="${o}"${datos[c.id]===o?' selected':''}>${o}</option>`);
-      div.innerHTML += `<select class="campo-input${hasErr?' error':''}" onchange="setVal('${c.id}',this.value)">${opts}</select>`;
+      div.innerHTML += `<select class="campo-input${hasErr?' error':''}" onchange="datos['${c.id}']=this.value">${opts}</select>`;
     } else {
-      div.innerHTML += `<input type="${c.tipo||'text'}" class="campo-input${hasErr?' error':''}" value="${datos[c.id]||''}" placeholder="${c.ph||''}" oninput="setVal('${c.id}',this.value)" />`;
+      div.innerHTML += `<input type="${c.tipo||'text'}" class="campo-input${hasErr?' error':''}" value="${datos[c.id]||''}" placeholder="${c.ph||''}" oninput="datos['${c.id}']=this.value" />`;
     }
     if (hasErr) div.innerHTML += '<div class="campo-error">Este campo es obligatorio</div>';
     body.appendChild(div);
@@ -346,7 +346,14 @@ function renderPaso() {
 function setVal(id, val) {
   datos[id] = val;
   errores = errores.filter(e => e !== id);
-  renderPaso();
+}
+
+function setYesNo(id, val, btn) {
+  datos[id] = val;
+  errores = errores.filter(e => e !== id);
+  const parent = btn.parentElement;
+  parent.querySelectorAll('.yesno-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
 }
 
 function validar() {
