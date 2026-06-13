@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#1A7A7A" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>Pre-consulta · Centro Cognitivo</title>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #F7F4EF; color: #1C2B2B; min-height: 100vh; }
+    button { font-family: inherit; cursor: pointer; border: none; }
+    input, select, textarea { font-family: inherit; }
+
+    /* INICIO */
+    .inicio { min-height: 100vh; background: linear-gradient(160deg, #145F5F 0%, #1A7A7A 50%, #2A9898 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 24px; text-align: center; }
+    .inicio-sub { color: rgba(255,255,255,0.55); font-size: 12px; letter-spacing: 2px; font-weight: 600; margin-bottom: 4px; }
+    .inicio-emoji { font-size: 52px; margin: 12px 0 4px; }
+    .inicio h1 { color: #fff; font-size: 30px; font-weight: 900; margin-bottom: 8px; line-height: 1.15; }
+    .inicio p { color: rgba(255,255,255,0.75); font-size: 15px; line-height: 1.65; max-width: 280px; margin: 0 auto 48px; }
+    .btn-card { width: 100%; max-width: 360px; padding: 20px; border-radius: 18px; display: flex; align-items: center; justify-content: space-between; text-align: left; margin-bottom: 14px; }
+    .btn-card-white { background: #fff; color: #1A7A7A; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+    .btn-card-ghost { background: rgba(255,255,255,0.12); border: 2px solid rgba(255,255,255,0.3); color: #fff; }
+    .btn-card-label { display: block; font-size: 12px; font-weight: 500; margin-bottom: 3px; opacity: 0.6; }
+    .btn-card-title { font-size: 16px; font-weight: 700; }
+    .btn-card-emoji { font-size: 26px; }
+    .inicio-credit { margin-top: 44px; color: rgba(255,255,255,0.4); font-size: 12px; }
+
+    /* FORM */
+    .form-wrap { min-height: 100vh; background: #F7F4EF; }
+    .form-wrap.destacado { background: #FFF8F5; }
+    .form-header { padding: 16px 20px 20px; position: sticky; top: 0; z-index: 10; box-shadow: 0 2px 12px rgba(0,0,0,0.12); }
+    .form-header.normal { background: #1A7A7A; }
+    .form-header.accent { background: #E05A2B; }
+    .form-header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .form-header-label { color: rgba(255,255,255,0.75); font-size: 13px; font-weight: 500; }
+    .progress-bar { background: rgba(255,255,255,0.25); border-radius: 6px; height: 5px; overflow: hidden; }
+    .progress-fill { background: #fff; height: 5px; border-radius: 6px; transition: width 0.35s ease; }
+    .form-titulo { padding: 22px 20px 6px; }
+    .form-titulo-inner { display: flex; align-items: center; gap: 10px; }
+    .form-titulo-emoji { font-size: 30px; }
+    .form-titulo h2 { font-size: 21px; font-weight: 800; }
+    .form-titulo h2.normal { color: #1C2B2B; }
+    .form-titulo h2.accent { color: #E05A2B; }
+    .form-titulo-note { font-size: 13px; color: #E05A2B; font-weight: 500; margin-top: 3px; }
+    .form-body { padding: 12px 20px 120px; display: flex; flex-direction: column; gap: 20px; }
+    .campo-label { display: block; font-size: 14px; font-weight: 600; color: #1C2B2B; margin-bottom: 7px; line-height: 1.45; }
+    .campo-req { color: #E05A2B; margin-left: 3px; }
+    .campo-error { font-size: 12px; color: #E05A2B; font-weight: 500; margin-top: 5px; }
+    .campo-input { width: 100%; padding: 13px 14px; border-radius: 12px; border: 1.5px solid #D4E5E5; font-size: 16px; color: #1C2B2B; background: #fff; outline: none; transition: border-color 0.15s; -webkit-appearance: none; }
+    .campo-input.error { border-color: #E05A2B; }
+    .campo-input:focus { border-color: #1A7A7A; }
+    textarea.campo-input { resize: vertical; line-height: 1.6; }
+    select.campo-input { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B8080' fill='none' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 40px; }
+    .yesno { display: flex; gap: 10px; }
+    .yesno-btn { flex: 1; padding: 13px 0; border-radius: 12px; border: 1.5px solid #D4E5E5; background: #fff; color: #6B8080; font-size: 16px; font-weight: 400; transition: all 0.15s; }
+    .yesno-btn.active { border-color: #1A7A7A; background: #E8F5F5; color: #1A7A7A; font-weight: 700; }
+    .form-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid #D4E5E5; padding: 12px 20px; display: flex; gap: 10px; box-shadow: 0 -4px 20px rgba(0,0,0,0.08); z-index: 10; }
+    .btn-back { flex: 1; padding: 15px; border-radius: 14px; border: 1.5px solid #D4E5E5; background: #fff; color: #6B8080; font-size: 16px; font-weight: 600; }
+    .btn-next { flex: 2; padding: 15px; border-radius: 14px; font-size: 16px; font-weight: 700; color: #fff; transition: opacity 0.15s; }
+    .btn-next.normal { background: #1A7A7A; }
+    .btn-next.accent { background: #E05A2B; }
+    .btn-next:disabled { opacity: 0.7; }
+
+    /* ENVIADO */
+    .enviado { min-height: 100vh; background: #1A7A7A; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px; text-align: center; }
+    .enviado-emoji { font-size: 64px; margin-bottom: 20px; }
+    .enviado h2 { color: #fff; font-size: 26px; font-weight: 800; margin-bottom: 12px; }
+    .enviado p { color: rgba(255,255,255,0.85); font-size: 16px; line-height: 1.7; max-width: 300px; margin-bottom: 32px; }
+    .enviado-badge { padding: 14px 24px; background: rgba(255,255,255,0.15); border-radius: 14px; color: #fff; font-size: 14px; }
+
+    /* PANEL */
+    .panel-header { background: #1C2B2B; padding: 20px 20px 18px; position: sticky; top: 0; z-index: 10; }
+    .panel-header-top { display: flex; justify-content: space-between; align-items: center; }
+    .panel-header-sub { color: rgba(255,255,255,0.5); font-size: 12px; margin-bottom: 2px; }
+    .panel-header h1 { color: #fff; font-size: 20px; font-weight: 800; }
+    .btn-salir { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); border-radius: 10px; padding: 9px 14px; font-size: 13px; }
+    .panel-count { margin-top: 12px; display: inline-block; padding: 5px 12px; background: rgba(255,255,255,0.1); border-radius: 8px; color: rgba(255,255,255,0.75); font-size: 13px; }
+    .panel-body { padding: 16px 20px 40px; display: flex; flex-direction: column; gap: 12px; }
+    .panel-empty { text-align: center; padding: 64px 20px; }
+    .panel-empty-emoji { font-size: 44px; margin-bottom: 14px; }
+    .panel-empty p { color: #6B8080; font-size: 15px; }
+    .card { background: #fff; border-radius: 16px; border: 1px solid #D4E5E5; padding: 16px; cursor: pointer; }
+    .card-nombre { font-weight: 700; font-size: 16px; color: #1C2B2B; }
+    .card-meta { font-size: 13px; color: #6B8080; margin-top: 2px; }
+    .card-fecha { font-size: 11px; color: #6B8080; margin-top: 3px; }
+    .card-motivo { margin-top: 10px; padding: 9px 12px; background: #FDF0EB; border-radius: 10px; border-left: 3px solid #E05A2B; font-size: 13px; color: #1C2B2B; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .card-footer { display: flex; align-items: center; margin-top: 11px; }
+    .card-tel { font-size: 12px; color: #1A7A7A; font-weight: 600; }
+    .card-arrow { margin-left: auto; color: #1A7A7A; font-size: 22px; }
+    .btn-del { font-size: 12px; color: #C04040; background: none; border: 1px solid #F0CCCC; border-radius: 6px; padding: 4px 10px; margin-left: 12px; }
+
+    /* DETALLE */
+    .detalle-header { background: #1C2B2B; padding: 16px 20px; position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 12px; }
+    .btn-volver { background: rgba(255,255,255,0.1); color: #fff; border-radius: 10px; padding: 9px 14px; font-size: 14px; }
+    .detalle-nombre { color: #fff; font-weight: 700; font-size: 16px; }
+    .detalle-fecha { color: rgba(255,255,255,0.55); font-size: 12px; }
+    .detalle-body { padding: 16px 20px 48px; display: flex; flex-direction: column; gap: 14px; }
+    .motivo-box { background: #FDF0EB; border: 2px solid #E05A2B; border-radius: 16px; padding: 16px; }
+    .motivo-title { color: #E05A2B; font-weight: 800; font-size: 13px; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .motivo-text { color: #1C2B2B; font-size: 15px; line-height: 1.65; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .chip { background: rgba(224,90,43,0.1); border-radius: 8px; padding: 4px 10px; font-size: 12px; color: #1C2B2B; }
+    .chip strong { color: #E05A2B; }
+    .motivo-intentos { margin-top: 10px; font-size: 13px; color: #1C2B2B; }
+    .sec-box { background: #fff; border-radius: 16px; border: 1px solid #D4E5E5; overflow: hidden; }
+    .sec-header { padding: 10px 16px; background: #F0FAF9; border-bottom: 1px solid #D4E5E5; display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 13px; color: #1A7A7A; }
+    .sec-body { padding: 12px 16px; display: flex; flex-direction: column; gap: 12px; }
+    .sec-item-label { font-size: 12px; color: #6B8080; font-weight: 500; margin-bottom: 3px; }
+    .sec-item-val { font-size: 14px; color: #1C2B2B; line-height: 1.55; }
+    .exp-box { background: #EAF5EE; border: 1.5px solid #2E7D5E; border-radius: 16px; padding: 16px; }
+    .exp-title { color: #2E7D5E; font-weight: 700; font-size: 13px; margin-bottom: 6px; }
+    .exp-text { color: #1C2B2B; font-size: 14px; line-height: 1.6; }
+    .exp-extra { margin-top: 8px; font-size: 13px; color: #6B8080; font-style: italic; }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<!-- INICIO -->
+<div id="vista-inicio" class="inicio">
+  <div class="inicio-sub">CENTRO COGNITIVO</div>
+  <div class="inicio-emoji">🧠</div>
+  <h1>Pre-consulta</h1>
+  <p>Información inicial para la primera sesión psicológica</p>
+  <button class="btn-card btn-card-white" onclick="irA('formulario')">
+    <span>
+      <span class="btn-card-label">Para padres / acudientes</span>
+      <span class="btn-card-title">Llenar formulario</span>
+    </span>
+    <span class="btn-card-emoji">📝</span>
+  </button>
+  <button class="btn-card btn-card-ghost" onclick="irA('panel')">
+    <span>
+      <span class="btn-card-label">Para el psicólogo</span>
+      <span class="btn-card-title">Ver respuestas</span>
+    </span>
+    <span class="btn-card-emoji">📊</span>
+  </button>
+  <div class="inicio-credit">Psic. Alfonso Miranda · T.P. 162714</div>
+</div>
+
+<!-- FORMULARIO -->
+<div id="vista-formulario" class="hidden">
+  <div class="form-wrap" id="form-wrap">
+    <div class="form-header" id="form-header">
+      <div class="form-header-top">
+        <span class="form-header-label">Pre-consulta</span>
+        <span class="form-header-label" id="paso-label">1 de 7</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:14%"></div></div>
+    </div>
+    <div class="form-titulo" id="form-titulo">
+      <div class="form-titulo-inner">
+        <span class="form-titulo-emoji" id="sec-emoji">👤</span>
+        <div>
+          <h2 id="sec-titulo" class="normal">Datos del niño/a</h2>
+          <div id="sec-note" class="form-titulo-note hidden">La parte más importante — tómese el tiempo que necesite.</div>
+        </div>
+      </div>
+    </div>
+    <div class="form-body" id="form-body"></div>
+    <div class="form-nav">
+      <button class="btn-back hidden" id="btn-back" onclick="anterior()">← Atrás</button>
+      <button class="btn-next normal" id="btn-next" onclick="siguiente()">Continuar →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ENVIADO -->
+<div id="vista-enviado" class="enviado hidden">
+  <div class="enviado-emoji">✅</div>
+  <h2>¡Gracias!</h2>
+  <p>Su información fue recibida. El psicólogo la revisará antes de la primera sesión y se comunicará para confirmar la cita.</p>
+  <div class="enviado-badge"><strong>Centro Cognitivo</strong><br>Psic. Alfonso Miranda · T.P. 162714</div>
+</div>
+
+<!-- PANEL -->
+<div id="vista-panel" class="hidden">
+  <div class="panel-header">
+    <div class="panel-header-top">
+      <div>
+        <div class="panel-header-sub">Centro Cognitivo</div>
+        <h1>Panel de Pre-consultas</h1>
+      </div>
+      <button class="btn-salir" onclick="irA('inicio')">Salir</button>
+    </div>
+    <div class="panel-count" id="panel-count">0 formularios</div>
+  </div>
+  <div class="panel-body" id="panel-body"></div>
+</div>
+
+<!-- DETALLE -->
+<div id="vista-detalle" class="hidden">
+  <div class="detalle-header">
+    <button class="btn-volver" onclick="irA('panel')">←</button>
+    <div>
+      <div class="detalle-nombre" id="det-nombre"></div>
+      <div class="detalle-fecha" id="det-fecha"></div>
+    </div>
+  </div>
+  <div class="detalle-body" id="detalle-body"></div>
+</div>
+
+<script>
+// ── Config EmailJS ──
+const EMAILJS_SERVICE  = 'service_fq64ndw';
+const EMAILJS_TEMPLATE = 'template_9v7u018';
+const EMAILJS_KEY      = 'wwH6rhBZcEEfhn38M';
+const CALLMEBOT_KEY    = ''; // Se agrega cuando llegue el API key de WhatsApp
+const WA_NUMBER        = '573003348906';
+
+emailjs.init(EMAILJS_KEY);
+
+// ── Storage ──
+const STORE = 'cc_pre_v3';
+function cargar() { try { return JSON.parse(localStorage.getItem(STORE) || '[]'); } catch { return []; } }
+function guardar(arr) { localStorage.setItem(STORE, JSON.stringify(arr)); }
+function agregarResp(d) { const a = cargar(); a.unshift({id: Date.now(), fecha: new Date().toLocaleString('es-CO'), ...d}); guardar(a); }
+function eliminarResp(id) { guardar(cargar().filter(r => r.id !== id)); }
+
+// ── Secciones ──
+const SECS = [
+  { id:'id', titulo:'Datos del niño/a', emoji:'👤', campos:[
+    {id:'nombre_nino', label:'Nombre completo del niño/a', tipo:'text', req:true},
+    {id:'fecha_nac', label:'Fecha de nacimiento', tipo:'date', req:true},
+    {id:'edad', label:'Edad actual', tipo:'text', req:true, ph:'Ej: 8 años'},
+    {id:'grado', label:'Grado / Curso escolar', tipo:'text', req:true, ph:'Ej: 3° primaria'},
+    {id:'nombre_acudiente', label:'Nombre del acudiente', tipo:'text', req:true},
+    {id:'parentesco', label:'Parentesco', tipo:'select', req:true, ops:['Madre','Padre','Abuelo/a','Tío/a','Otro cuidador']},
+    {id:'telefono', label:'Teléfono de contacto', tipo:'tel', req:true},
+    {id:'convive', label:'¿Con quién vive el niño/a?', tipo:'text', req:true, ph:'Ej: con ambos padres y una hermana'},
+  ]},
+  { id:'motivo', titulo:'Motivo de consulta', emoji:'⭐', destacado:true, campos:[
+    {id:'motivo_principal', label:'¿Cuál es la razón principal por la que busca consulta?', tipo:'textarea', req:true, ph:'Descríbala con sus propias palabras.', rows:4},
+    {id:'desde_cuando', label:'¿Desde cuándo se observa esta situación?', tipo:'text', req:true, ph:'Ej: hace 3 meses, desde que entró al colegio…'},
+    {id:'quien_identifico', label:'¿Quién lo identificó primero?', tipo:'text', ph:'Ej: los padres, el colegio, el médico…'},
+    {id:'evolucion', label:'¿Cómo ha evolucionado desde que se identificó?', tipo:'select', ops:['Ha empeorado','Se mantiene igual','Ha mejorado un poco','Ha mejorado notablemente']},
+    {id:'intentos', label:'¿Qué han intentado hacer para manejarlo?', tipo:'textarea', rows:3, ph:'Ej: hablar con él/ella, cambiar rutinas…'},
+  ]},
+  { id:'salud', titulo:'Salud y desarrollo', emoji:'🩺', campos:[
+    {id:'complicaciones_emb', label:'¿Hubo complicaciones durante el embarazo o el parto?', tipo:'yesno'},
+    {id:'complicaciones_desc', label:'Si las hubo, descríbalas brevemente', tipo:'textarea', rows:2},
+    {id:'enfermedades', label:'Enfermedades, accidentes o diagnósticos médicos importantes', tipo:'textarea', rows:2, ph:'Si no hay ninguno relevante, deje en blanco.'},
+    {id:'medicacion', label:'¿Consume medicación actualmente?', tipo:'yesno'},
+    {id:'medicacion_cual', label:'¿Cuál medicación y por qué razón?', tipo:'text'},
+    {id:'primeras_palabras', label:'¿A qué edad dijo sus primeras palabras?', tipo:'text', ph:'Ej: al año, a los 18 meses'},
+    {id:'camino', label:'¿A qué edad caminó solo/a?', tipo:'text'},
+    {id:'dif_lenguaje', label:'¿Dificultades de lenguaje, motoras o de comunicación?', tipo:'yesno'},
+    {id:'dif_lenguaje_desc', label:'Si las hay, indique cuáles', tipo:'text'},
+  ]},
+  { id:'escolar', titulo:'Historia escolar', emoji:'📚', campos:[
+    {id:'colegio', label:'Institución educativa actual', tipo:'text', req:true},
+    {id:'repitio', label:'¿Ha repetido algún grado escolar?', tipo:'yesno'},
+    {id:'desempeno', label:'¿Cómo es su desempeño académico?', tipo:'textarea', rows:2},
+    {id:'relaciones_escuela', label:'¿Cómo es su relación con compañeros y docentes?', tipo:'textarea', rows:2},
+    {id:'reporte_colegio', label:'¿El colegio ha reportado dificultades?', tipo:'yesno'},
+    {id:'reporte_colegio_desc', label:'Si las hay, descríbalas', tipo:'textarea', rows:2},
+  ]},
+  { id:'familiar', titulo:'Contexto familiar', emoji:'🏠', campos:[
+    {id:'dinamica', label:'¿Cómo describiría la dinámica familiar en casa?', tipo:'textarea', ph:'Relación entre padres, entre padres e hijos, entre hermanos.'},
+    {id:'respuesta_padres', label:'¿Cómo responden cuando el niño/a presenta el comportamiento que los trae a consulta?', tipo:'textarea'},
+    {id:'eventos_sig', label:'¿Ha habido eventos familiares significativos recientemente?', tipo:'textarea', ph:'Ej: separación, duelo, cambio de ciudad…'},
+    {id:'ant_psicologico', label:'¿Ha tenido alguna evaluación o proceso psicológico anterior?', tipo:'yesno'},
+    {id:'ant_psicologico_desc', label:'¿Quién lo realizó, cuándo y cuál fue el resultado?', tipo:'textarea', rows:2},
+    {id:'ant_familiar', label:'¿Algún familiar cercano con diagnósticos psicológicos o psiquiátricos?', tipo:'yesno'},
+    {id:'ant_familiar_desc', label:'Parentesco y condición', tipo:'text'},
+  ]},
+  { id:'conducta', titulo:'Conducta y hábitos', emoji:'🔍', campos:[
+    {id:'frustracion', label:'¿Cómo reacciona ante la frustración?', tipo:'textarea', ph:'Cuando se le niega algo, pierde un juego, enfrenta una dificultad…'},
+    {id:'miedos', label:'¿Presenta miedos, preocupaciones o síntomas físicos de nerviosismo?', tipo:'textarea', ph:'Ej: dolor de estómago, insomnio, llanto frecuente…'},
+    {id:'sueno', label:'¿El niño/a duerme solo/a?', tipo:'select', ops:['Sí, solo/a en su cuarto','A veces pasa a la cama de los padres','Duerme siempre con los padres u otros']},
+    {id:'alimentacion', label:'¿Cómo es su alimentación?', tipo:'select', ops:['Sin dificultades','Come poco o es muy selectivo/a','Come en exceso','Hay dificultades específicas']},
+    {id:'intereses', label:'Intereses, hobbies o actividades favoritas', tipo:'text'},
+  ]},
+  { id:'expectativas', titulo:'Expectativas', emoji:'🎯', campos:[
+    {id:'expectativas', label:'¿Qué espera lograr con este proceso?', tipo:'textarea', req:true, ph:'¿Qué cambio o resultado le indicaría que el proceso fue útil?', rows:3},
+    {id:'info_adicional', label:'¿Algo más que el psicólogo deba saber antes de la primera sesión?', tipo:'textarea'},
+  ]},
+];
+
+// ── Estado ──
+let paso = 0;
+let datos = {};
+let errores = [];
+
+// ── Navegación ──
+function irA(vista) {
+  ['inicio','formulario','enviado','panel','detalle'].forEach(v => {
+    document.getElementById('vista-'+v).classList.toggle('hidden', v !== vista);
+  });
+  if (vista === 'formulario') { paso = 0; datos = {}; errores = []; renderPaso(); }
+  if (vista === 'panel') renderPanel();
+  window.scrollTo(0, 0);
+}
+
+// ── Render paso ──
+function renderPaso() {
+  const sec = SECS[paso];
+  const total = SECS.length;
+  const wrap = document.getElementById('form-wrap');
+  const header = document.getElementById('form-header');
+  wrap.className = 'form-wrap' + (sec.destacado ? ' destacado' : '');
+  header.className = 'form-header' + (sec.destacado ? ' accent' : ' normal');
+  document.getElementById('paso-label').textContent = (paso+1) + ' de ' + total;
+  document.getElementById('progress-fill').style.width = (((paso+1)/total)*100) + '%';
+  document.getElementById('sec-emoji').textContent = sec.emoji;
+  const tit = document.getElementById('sec-titulo');
+  tit.textContent = sec.titulo;
+  tit.className = sec.destacado ? 'accent' : 'normal';
+  document.getElementById('sec-note').classList.toggle('hidden', !sec.destacado);
+  const btnNext = document.getElementById('btn-next');
+  btnNext.className = 'btn-next ' + (sec.destacado ? 'accent' : 'normal');
+  btnNext.textContent = paso === total-1 ? 'Enviar formulario ✓' : 'Continuar →';
+  document.getElementById('btn-back').classList.toggle('hidden', paso === 0);
+
+  // Render campos
+  const body = document.getElementById('form-body');
+  body.innerHTML = '';
+  sec.campos.forEach(c => {
+    const div = document.createElement('div');
+    const hasErr = errores.includes(c.id);
+    div.innerHTML = `<label class="campo-label">${c.label}${c.req ? '<span class="campo-req">*</span>' : ''}</label>`;
+    if (c.tipo === 'yesno') {
+      div.innerHTML += `<div class="yesno">
+        <button class="yesno-btn${datos[c.id]==='Sí'?' active':''}" onclick="setVal('${c.id}','Sí')">Sí</button>
+        <button class="yesno-btn${datos[c.id]==='No'?' active':''}" onclick="setVal('${c.id}','No')">No</button>
+      </div>`;
+    } else if (c.tipo === 'textarea') {
+      div.innerHTML += `<textarea class="campo-input${hasErr?' error':''}" rows="${c.rows||3}" placeholder="${c.ph||''}" oninput="setVal('${c.id}',this.value)">${datos[c.id]||''}</textarea>`;
+    } else if (c.tipo === 'select') {
+      let opts = '<option value="">Seleccionar…</option>';
+      (c.ops||[]).forEach(o => opts += `<option value="${o}"${datos[c.id]===o?' selected':''}>${o}</option>`);
+      div.innerHTML += `<select class="campo-input${hasErr?' error':''}" onchange="setVal('${c.id}',this.value)">${opts}</select>`;
+    } else {
+      div.innerHTML += `<input type="${c.tipo||'text'}" class="campo-input${hasErr?' error':''}" value="${datos[c.id]||''}" placeholder="${c.ph||''}" oninput="setVal('${c.id}',this.value)" />`;
+    }
+    if (hasErr) div.innerHTML += '<div class="campo-error">Este campo es obligatorio</div>';
+    body.appendChild(div);
+  });
+  window.scrollTo(0, 0);
+}
+
+function setVal(id, val) {
+  datos[id] = val;
+  errores = errores.filter(e => e !== id);
+  renderPaso();
+}
+
+function validar() {
+  const sec = SECS[paso];
+  errores = sec.campos.filter(c => c.req && (!datos[c.id] || !datos[c.id].toString().trim())).map(c => c.id);
+  return errores.length === 0;
+}
+
+function siguiente() {
+  if (!validar()) { renderPaso(); window.scrollTo(0,0); return; }
+  if (paso < SECS.length - 1) { paso++; renderPaso(); }
+  else enviar();
+}
+
+function anterior() {
+  if (paso > 0) { paso--; renderPaso(); }
+}
+
+async function enviar() {
+  const btn = document.getElementById('btn-next');
+  btn.disabled = true;
+  btn.textContent = 'Enviando…';
+  try {
+    agregarResp(datos);
+    await notificar(datos);
+  } catch(e) { console.log('Notif error:', e); }
+  irA('enviado');
+}
+
+// ── Notificaciones ──
+async function notificar(d) {
+  const resumen = `PACIENTE: ${d.nombre_nino||'—'} | Edad: ${d.edad||'—'} | Grado: ${d.grado||'—'}
+ACUDIENTE: ${d.nombre_acudiente||'—'} (${d.parentesco||'—'}) | Tel: ${d.telefono||'—'}
+MOTIVO: ${d.motivo_principal||'—'}
+Desde: ${d.desde_cuando||'—'} | Evolución: ${d.evolucion||'—'}
+COLEGIO: ${d.colegio||'—'}
+EXPECTATIVAS: ${d.expectativas||'—'}`;
+
+  // Email
+  try {
+    await emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
+      paciente: d.nombre_nino||'—',
+      acudiente: d.nombre_acudiente||'—',
+      telefono: d.telefono||'—',
+      motivo: d.motivo_principal||'—',
+      desde_cuando: d.desde_cuando||'—',
+      resumen_completo: resumen,
+      fecha: new Date().toLocaleString('es-CO'),
+    });
+  } catch(e) { console.log('Email error:', e); }
+
+  // WhatsApp
+  if (CALLMEBOT_KEY) {
+    try {
+      const txt = encodeURIComponent(`🔔 *Nueva pre-consulta*\n*Paciente:* ${d.nombre_nino||'—'}\n*Tel:* ${d.telefono||'—'}\n*Motivo:* ${(d.motivo_principal||'').slice(0,150)}`);
+      await fetch(`https://api.callmebot.com/whatsapp.php?phone=${WA_NUMBER}&text=${txt}&apikey=${CALLMEBOT_KEY}`);
+    } catch(e) { console.log('WA error:', e); }
+  }
+}
+
+// ── Panel ──
+function renderPanel() {
+  const resp = cargar();
+  const count = document.getElementById('panel-count');
+  count.textContent = resp.length + (resp.length === 1 ? ' formulario recibido' : ' formularios recibidos');
+  const body = document.getElementById('panel-body');
+  if (resp.length === 0) {
+    body.innerHTML = `<div class="panel-empty"><div class="panel-empty-emoji">📋</div><p>Aún no hay formularios.</p><p style="font-size:13px;margin-top:6px">Comparte el link con los padres para recibir pre-consultas aquí.</p></div>`;
+    return;
+  }
+  body.innerHTML = '';
+  resp.forEach(r => {
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `
+      <div class="card-nombre">${r.nombre_nino||'Sin nombre'}</div>
+      <div class="card-meta">${[r.edad, r.grado, r.colegio].filter(Boolean).join(' · ')}</div>
+      <div class="card-fecha">${r.fecha||''}</div>
+      ${r.motivo_principal ? `<div class="card-motivo">${r.motivo_principal}</div>` : ''}
+      <div class="card-footer">
+        <span class="card-tel">${r.telefono ? '📞 '+r.telefono : ''}</span>
+        <button class="btn-del" onclick="event.stopPropagation();borrar(${r.id})">Eliminar</button>
+        <span class="card-arrow">›</span>
+      </div>`;
+    div.onclick = () => verDetalle(r);
+    body.appendChild(div);
+  });
+}
+
+function borrar(id) {
+  if (!confirm('¿Eliminar este formulario?')) return;
+  eliminarResp(id);
+  renderPanel();
+}
+
+// ── Detalle ──
+function verDetalle(r) {
+  document.getElementById('vista-panel').classList.add('hidden');
+  document.getElementById('vista-detalle').classList.remove('hidden');
+  document.getElementById('det-nombre').textContent = r.nombre_nino||'—';
+  document.getElementById('det-fecha').textContent = r.fecha||'';
+
+  const body = document.getElementById('detalle-body');
+  body.innerHTML = '';
+
+  // Motivo
+  if (r.motivo_principal) {
+    body.innerHTML += `<div class="motivo-box">
+      <div class="motivo-title">⭐ MOTIVO DE CONSULTA</div>
+      <div class="motivo-text">${r.motivo_principal}</div>
+      <div class="chips">
+        ${r.desde_cuando ? `<span class="chip"><strong>Desde:</strong> ${r.desde_cuando}</span>` : ''}
+        ${r.evolucion ? `<span class="chip"><strong>Evolución:</strong> ${r.evolucion}</span>` : ''}
+        ${r.quien_identifico ? `<span class="chip"><strong>Identificó:</strong> ${r.quien_identifico}</span>` : ''}
+      </div>
+      ${r.intentos ? `<div class="motivo-intentos"><strong>Han intentado:</strong> ${r.intentos}</div>` : ''}
+    </div>`;
+  }
+
+  // Contacto
+  body.innerHTML += `<div class="sec-box">
+    <div class="sec-header">👤 Datos de contacto</div>
+    <div class="sec-body">
+      <div><div class="sec-item-label">Paciente</div><div class="sec-item-val">${r.nombre_nino||'—'}, ${r.edad||'—'}, ${r.grado||'—'}</div></div>
+      <div><div class="sec-item-label">Acudiente</div><div class="sec-item-val">${r.nombre_acudiente||'—'} (${r.parentesco||'—'})</div></div>
+      <div><div class="sec-item-label">Teléfono</div><div class="sec-item-val">${r.telefono||'—'}</div></div>
+      <div><div class="sec-item-label">Vive con</div><div class="sec-item-val">${r.convive||'—'}</div></div>
+    </div>
+  </div>`;
+
+  // Otras secciones
+  const secs = [
+    {titulo:'🩺 Salud y desarrollo', campos:['complicaciones_emb','complicaciones_desc','enfermedades','medicacion','medicacion_cual','primeras_palabras','camino','dif_lenguaje','dif_lenguaje_desc']},
+    {titulo:'📚 Historia escolar', campos:['colegio','repitio','desempeno','relaciones_escuela','reporte_colegio','reporte_colegio_desc']},
+    {titulo:'🏠 Contexto familiar', campos:['dinamica','respuesta_padres','eventos_sig','ant_psicologico','ant_psicologico_desc','ant_familiar','ant_familiar_desc']},
+    {titulo:'🔍 Conducta y hábitos', campos:['frustracion','miedos','sueno','alimentacion','intereses']},
+  ];
+
+  secs.forEach(s => {
+    const items = s.campos.filter(c => r[c] && r[c] !== '');
+    if (!items.length) return;
+    let html = `<div class="sec-box"><div class="sec-header">${s.titulo}</div><div class="sec-body">`;
+    items.forEach(c => {
+      const sec = SECS.find(sec => sec.campos.find(campo => campo.id === c));
+      const campo = sec?.campos.find(campo => campo.id === c);
+      html += `<div><div class="sec-item-label">${campo?.label||c}</div><div class="sec-item-val">${r[c]}</div></div>`;
+    });
+    html += '</div></div>';
+    body.innerHTML += html;
+  });
+
+  // Expectativas
+  if (r.expectativas) {
+    body.innerHTML += `<div class="exp-box">
+      <div class="exp-title">🎯 Expectativas</div>
+      <div class="exp-text">${r.expectativas}</div>
+      ${r.info_adicional ? `<div class="exp-extra">${r.info_adicional}</div>` : ''}
+    </div>`;
+  }
+
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
