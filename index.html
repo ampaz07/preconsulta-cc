@@ -205,6 +205,9 @@
 </div>
 
 <script>
+// ── Config Google Sheets ──
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbz5EOvqaOIho740G9VEgjbkkPwcUc4V9KVYrWl3KSd_xl7ZrxRDiBUN8FgodI0MM6yr/exec';
+
 // ── Config EmailJS ──
 const EMAILJS_SERVICE  = 'service_fq64ndw';
 const EMAILJS_TEMPLATE = 'template_9v7u018';
@@ -378,9 +381,44 @@ async function enviar() {
   btn.textContent = 'Enviando…';
   try {
     agregarResp(datos);
+    await guardarEnSheets(datos);
     await notificar(datos);
   } catch(e) { console.log('Notif error:', e); }
   irA('enviado');
+}
+
+// ── Google Sheets ──
+async function guardarEnSheets(d) {
+  try {
+    await fetch(SHEETS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        fecha: new Date().toLocaleString('es-CO'),
+        nombre_nino: d.nombre_nino||'',
+        fecha_nac: d.fecha_nac||'',
+        edad: d.edad||'',
+        grado: d.grado||'',
+        nombre_acudiente: d.nombre_acudiente||'',
+        parentesco: d.parentesco||'',
+        telefono: d.telefono||'',
+        convive: d.convive||'',
+        motivo_principal: d.motivo_principal||'',
+        desde_cuando: d.desde_cuando||'',
+        quien_identifico: d.quien_identifico||'',
+        evolucion: d.evolucion||'',
+        intentos: d.intentos||'',
+        colegio: d.colegio||'',
+        medicacion_cual: d.medicacion_cual||'',
+        ant_psicologico_desc: d.ant_psicologico_desc||'',
+        expectativas: d.expectativas||'',
+        info_adicional: d.info_adicional||'',
+        alerta: d.alerta||'sin alerta'
+      })
+    });
+    console.log('Guardado en Sheets OK');
+  } catch(e) { console.log('Sheets error:', e); }
 }
 
 // ── Notificaciones ──
